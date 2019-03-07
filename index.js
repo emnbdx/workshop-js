@@ -1,74 +1,59 @@
 // SETUP
-var readlineSync = require('readline-sync');
+var readlineSync = require("readline-sync");
+var Utils = require("./utils");
 
 // VARIABLE
-var welcomeList = [
-    'Hello',
-    'Bonjour',
-    'Ca fart ?',
-    'How are u doing ?'
-]
+var welcomeList = ["Hello", "Bonjour", "Ca fart ?", "How are u doing ?"];
+var firstName = "";
+var lastName = "";
+var sex = "";
+var price = "";
 
-var firstName = ''
-var lastName = ''
-var sex = ''
-var eventType = ''
-var price = ''
+var sexValues = ["F", "M", "O"];
 
-var sexValues = [
-    'F',
-    'M',
-    'O'
-]
-
-var eventValues = {
-    'Caritatif (C)': 'C',
-    'Humanitaire (H)': 'H',
-    'Drole (D)': 'D',
-    'Autre (A)' : 'A'
-}
-
-var randomize = (list) => {
-    var length = list.length - 1
-    return list[Math.floor(Math.random() * 10) % length]
-}
+var eventValues = [
+  "Caritatif",
+  "Humanitaire",
+  "Drole",
+  "Autre",
+  "But Purement Lucratif"
+];
 
 // Say hello
-console.log(randomize(welcomeList))
+console.log(Utils.randomize(welcomeList));
 
 // Ask name
-var answer = readlineSync.question('May I have your name? ');
-var nameParts = answer.split(',')
-firstName = nameParts[0]
-lastName = nameParts[1]
+var answer = readlineSync.question("May I have your name? ").toUpperCase();
+var nameParts = answer.split(",");
+firstName = nameParts[0];
+lastName = nameParts[1];
 
-//console.log(`${firstName} ${lastName}`)
-
-var sexValid = false;
-while(!sexValid){
-    var sexAnswer = readlineSync.question('May I have your sex (F/M/O)? ');
-    if(sexValues.indexOf(sexAnswer) >= 0) {
-        sex = sexAnswer;
-        sexValid = true
-    }
+// Check genre
+var sexAnswer = -1;
+while (sexAnswer < 0) {
+  sexAnswer = readlineSync.keyInSelect(sexValues, "May I have your sex ? ");
 }
+sex = sexValues[sexAnswer];
 
-console.log(sex)
+// Ask for email
+var email = readlineSync.questionEMail("Votre courriel please :");
 
-
-var eventValid = false;
-while(!eventValid){
-    var eventAnswer = readlineSync.question(`Merci de choisir votre type d'évènement dans cette liste:\n${Object.keys(eventValues).join('\n')}\n`);
-    if(Object.values(eventValues).indexOf(eventAnswer) >= 0) {
-        eventType = eventAnswer;
-        eventValid = true
-    }
+// Ask for evenType until a good answer is done
+var eventAnswer = -1;
+while (eventAnswer < 0) {
+  eventAnswer = readlineSync.keyInSelect(
+    eventValues,
+    "Merci de choisir votre type d'évènement dans cette liste."
+  );
 }
+eventType = eventValues[eventAnswer];
 
-console.log(eventType)
-
-var priceAnswer = readlineSync.question('Combien tu payes ?');
-price = priceAnswer
+// Ask for $$$
+var priceAnswer = readlineSync.questionFloat("Combien tu payes ?");
+price = priceAnswer;
 
 //Recap
-console.log(`${firstName} ${lastName} va payer ${price} pour une évènement ${eventType}`)
+console.log(
+  `${firstName} ${lastName} va payer ${price} € pour un évènement ${eventType}`
+);
+console.log(`Un Email sera envoyé à : ${email}`);
